@@ -65,6 +65,7 @@ public class FeedingScheduler {
      */
     public void shutdown() {
         executor.shutdownNow();
+        currentTask = null;
     }
 
     public ScheduledFuture<?> getCurrentTask() { return currentTask; }
@@ -85,7 +86,7 @@ public class FeedingScheduler {
                     System.out.println("[Scheduler] Scheduled meal could not be dispensed...");
                 } else {
                     MealPlan[] plans = petFeeder.getMealPlans();
-                    String name = (plans[mealIndex] != null) ? plans[mealIndex].getName() : "(unknown meal)";
+                    String name = (!plans[mealIndex].getName().isEmpty()) ? plans[mealIndex].getName() : "(unknown meal)";
                     System.out.println("[Scheduler] Dispensed scheduled meal: " + name);
                 }
             } catch (Exception e) {
