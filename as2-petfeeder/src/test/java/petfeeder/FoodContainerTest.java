@@ -6,7 +6,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import petfeeder.exceptions.FoodStockException;
-import petfeeder.exceptions.MealPlanException;
 
 public class FoodContainerTest {
     private FoodContainer fc;

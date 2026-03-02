@@ -3,9 +3,6 @@ package petfeeder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import petfeeder.exceptions.FoodStockException;
-import petfeeder.exceptions.MealPlanException;
-
-import java.awt.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 class PetFeederTest {
@@ -48,7 +45,7 @@ class PetFeederTest {
 
     @Test
     public void testAddMealPlan_Bad(){
-        assertTrue(feeder.addMealPlan(lunch), "failure: should be false.");
+        assertFalse(feeder.addMealPlan(meal), "failure: should be false.");
     }
 
     @Test

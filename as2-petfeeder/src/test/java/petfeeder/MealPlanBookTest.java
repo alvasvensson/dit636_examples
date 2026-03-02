@@ -11,6 +11,9 @@ class MealPlanBookTest {
     private MealPlan [] mealPlans;
     private MealPlan meal;
     private MealPlan breakfast;
+    private MealPlan mp3;
+    private MealPlan mp4;
+    private MealPlan mp5;
 
 
     @BeforeEach
@@ -21,6 +24,10 @@ class MealPlanBookTest {
 
         meal = new MealPlan();
         meal.setName("Meal");
+
+        mp3 = new MealPlan();
+        mp4 = new MealPlan();
+        mp5 = new MealPlan();
 
     }
 
@@ -38,9 +45,18 @@ class MealPlanBookTest {
         assertTrue(mealPlanBook.addMealPlan(meal), "failure: should be true");
     }
 
+    @Test
+    void testAddMealPlan_Bad_ArrayFull() {
+        mealPlanBook.addMealPlan(meal);
+        mealPlanBook.addMealPlan(breakfast);
+        mealPlanBook.addMealPlan(mp3);
+        mealPlanBook.addMealPlan(mp4);
+        assertFalse(mealPlanBook.addMealPlan(mp5), "failure: should be false");
+    }
+
     // tries to add same meal twice
     @Test
-    void testAddMealPlan_Bad() {
+    void testAddMealPlan_Bad_AlreadyAdded() {
         mealPlanBook.addMealPlan(meal);
         assertFalse(mealPlanBook.addMealPlan(meal), "failure: should be false");
     }
@@ -77,5 +93,14 @@ class MealPlanBookTest {
         MealPlan expectedMeal = meal;
 
         assertEquals(expectedMeal, actualMeals[0]);
+    }
+
+    @Test
+    void testEditMealPlan_Bad() {
+        mealPlanBook.addMealPlan(breakfast);
+        String actual = mealPlanBook.editMealPlan(3, meal);
+        String expected = null;
+
+        assertEquals(expected, actual);
     }
 }

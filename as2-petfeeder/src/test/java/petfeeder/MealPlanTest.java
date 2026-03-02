@@ -116,4 +116,42 @@ private MealPlan mp;
 
         assertEquals(0, mp.getAmtTreats());
     }
+
+    @Test
+    public void testToString_Normal(){
+        String actual = mp.toString();
+        String expected = "";
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testHashCode_Normal(){
+        int actual = mp.hashCode();
+        int expected = 31;
+        assertEquals(expected,actual);
+    }
+
+    @Test
+    public void testEquals_SameMeal() {
+        mp.setName("Dinner");
+        assertTrue(mp.equals(mp));
+    }
+
+    @Test
+    public void testEquals_NotNull() {
+        assertFalse(mp.equals(null));
+    }
+
+    @Test
+    public void testEquals_DifferentNames() {
+        mp.setName(null);
+        MealPlan mp1 = new MealPlan();
+        mp1.setName("Breakfast");
+        assertFalse(mp.equals(mp1));
+    }
+
+    @Test
+    public void testEquals_DifferentClasses() {
+        assertFalse(mp.equals(new Object()));
+    }
 }
