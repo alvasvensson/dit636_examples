@@ -1,0 +1,463 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Main</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">petfeeder</a>
+</div>
+
+<h1>Coverage Summary for Class: Main (petfeeder)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Main</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/66)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/158)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package petfeeder;
+&nbsp;
+&nbsp;import java.io.BufferedReader;
+&nbsp;import java.io.IOException;
+&nbsp;import java.io.InputStreamReader;
+&nbsp;
+&nbsp;import petfeeder.exceptions.FoodStockException;
+&nbsp;import petfeeder.exceptions.MealPlanException;
+&nbsp;
+&nbsp;/**
+&nbsp; * Starts the console UI for the PetFeeder.
+&nbsp; */
+<b class="nc">&nbsp;public class Main {</b>
+&nbsp;    private static PetFeeder petFeeder;
+&nbsp;    private static FeedingScheduler feedingScheduler;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prints the main menu and handles user input for 
+&nbsp;     * main menu commands.
+&nbsp;     */
+&nbsp;    public static void mainMenu() {
+<b class="nc">&nbsp;        System.out.println(&quot;1. Add a meal plan&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;2. Delete a meal plan&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;3. Edit a meal plan&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;4. Replenish food&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;5. Check food stock&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;6. Dispense meal&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;7. Configure scheduled feeding&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;8. Stop scheduled feeding&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;0. Exit\n&quot;);</b>
+&nbsp;        
+&nbsp;        //Get user input
+&nbsp;        try {
+<b class="nc">&nbsp;            int userInput = Integer.parseInt(inputOutput(&quot;Please press the number that corresponds to what you would like the pet feeder to do.&quot;));</b>
+&nbsp;            
+<b class="nc">&nbsp;            if (userInput &gt;= 0 &amp;&amp; userInput &lt;=8) {</b>
+<b class="nc">&nbsp;                if (userInput == 1) addMealPlan();</b>
+<b class="nc">&nbsp;                if (userInput == 2) deleteMealPlan();</b>
+<b class="nc">&nbsp;                if (userInput == 3) editMealPlan();</b>
+<b class="nc">&nbsp;                if (userInput == 4) replenishFood();</b>
+<b class="nc">&nbsp;                if (userInput == 5) checkFoodStock();</b>
+<b class="nc">&nbsp;                if (userInput == 6) dispenseMeal();</b>
+<b class="nc">&nbsp;                if (userInput == 7) configureScheduledFeeding();</b>
+<b class="nc">&nbsp;                if (userInput == 8) stopScheduledFeeding();</b>
+<b class="nc">&nbsp;                if (userInput == 0) {</b>
+<b class="nc">&nbsp;                    if (feedingScheduler != null) {</b>
+<b class="nc">&nbsp;                        feedingScheduler.shutdown();</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                    System.exit(0);</b>
+&nbsp;                }
+&nbsp;            } else {
+<b class="nc">&nbsp;                System.out.println(&quot;Please enter a number from 0 - 6&quot;);</b>
+<b class="nc">&nbsp;                mainMenu();</b>
+&nbsp;            }
+<b class="nc">&nbsp;        } catch (NumberFormatException e) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Please enter a number from 0 - 6&quot;);</b>
+<b class="nc">&nbsp;            mainMenu();</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * The add meal plan user interface that processes user input.
+&nbsp;     */
+&nbsp;    public static void addMealPlan() {
+&nbsp;        
+&nbsp;        //Read in meal plan name
+<b class="nc">&nbsp;        String name = inputOutput(&quot;\nPlease enter the meal plan name: &quot;);</b>
+&nbsp;        
+&nbsp;        //Read in amt kibble
+<b class="nc">&nbsp;        String kibbleString = inputOutput(&quot;\nPlease enter the units of kibble in the meal: &quot;);</b>
+&nbsp;        
+&nbsp;        //Read in amt water
+<b class="nc">&nbsp;        String waterString = inputOutput(&quot;\nPlease enter the units of water in the meal: &quot;);</b>
+&nbsp;        
+&nbsp;        //Read in amt wet food
+<b class="nc">&nbsp;        String wetFoodString = inputOutput(&quot;\nPlease enter the units of wet food in the meal: &quot;);</b>
+&nbsp;        
+&nbsp;        //Read in amt treats
+<b class="nc">&nbsp;        String treatsString = inputOutput(&quot;\nPlease enter the units of treats in the meal: &quot;);</b>
+&nbsp;                
+<b class="nc">&nbsp;        MealPlan m = new MealPlan();</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            m.setName(name);</b>
+<b class="nc">&nbsp;            m.setAmtKibble(kibbleString);</b>
+<b class="nc">&nbsp;            m.setAmtWater(waterString);</b>
+<b class="nc">&nbsp;            m.setAmtWetFood(wetFoodString);</b>
+<b class="nc">&nbsp;            m.setAmtTreats(treatsString);</b>
+&nbsp;            
+<b class="nc">&nbsp;            boolean added = petFeeder.addMealPlan(m);</b>
+&nbsp;            
+<b class="nc">&nbsp;            if(added) {</b>
+<b class="nc">&nbsp;                System.out.println(name + &quot; successfully added.\n&quot;);</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                System.out.println(name + &quot; could not be added.\n&quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        } catch (MealPlanException e) {</b>
+<b class="nc">&nbsp;            System.out.println(e.getMessage());</b>
+&nbsp;        } finally {
+<b class="nc">&nbsp;            mainMenu();</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Delete meal plan user interface that processes input.
+&nbsp;     */
+&nbsp;    public static void deleteMealPlan() {
+<b class="nc">&nbsp;        MealPlan [] plans = petFeeder.getMealPlans();</b>
+<b class="nc">&nbsp;        for(int i = 0; i &lt; plans.length; i++) {</b>
+<b class="nc">&nbsp;            if (plans[i] != null) {</b>
+<b class="nc">&nbsp;                System.out.println((i+1) + &quot;. &quot; + plans[i].getName()</b>
+<b class="nc">&nbsp;                        + &quot; (energy cost: &quot; + plans[i].getEnergyCost() + &quot;)&quot;);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        int planToDelete = planListSelection(&quot;Please select the number of the meal plan to delete.&quot;);</b>
+&nbsp;        
+<b class="nc">&nbsp;        if(planToDelete &lt; 0) {</b>
+<b class="nc">&nbsp;            mainMenu();</b>
+&nbsp;        }
+&nbsp;        
+<b class="nc">&nbsp;        String deleted = petFeeder.deleteMealPlan(planToDelete);</b>
+&nbsp;        
+<b class="nc">&nbsp;        if (deleted != null) {</b>
+<b class="nc">&nbsp;            System.out.println(deleted + &quot; successfully deleted.\n&quot;);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            System.out.println(&quot;Selected meal plan doesn&#39;t exist and could not be deleted.\n&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        mainMenu();</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Edit meal plan user interface that processes user input.
+&nbsp;     */
+&nbsp;    public static void editMealPlan() {
+<b class="nc">&nbsp;        MealPlan [] plans = petFeeder.getMealPlans();</b>
+<b class="nc">&nbsp;        for(int i = 0; i &lt; plans.length; i++) {</b>
+<b class="nc">&nbsp;            if (plans[i] != null) {</b>
+<b class="nc">&nbsp;                System.out.println((i+1) + &quot;. &quot; + plans[i].getName()</b>
+<b class="nc">&nbsp;                        + &quot; (energy cost: &quot; + plans[i].getEnergyCost() + &quot;)&quot;);</b>
+&nbsp;            }
+&nbsp;        }
+<b class="nc">&nbsp;        int planToEdit = planListSelection(&quot;Please select the number of the meal plan to edit.&quot;);</b>
+&nbsp;        
+<b class="nc">&nbsp;        if(planToEdit &lt; 0) {</b>
+<b class="nc">&nbsp;            mainMenu();</b>
+&nbsp;        }
+&nbsp;        
+&nbsp;        //Read in amt kibble
+<b class="nc">&nbsp;        String kibbleString = inputOutput(&quot;\nPlease enter the units of kibble in the meal: &quot;);</b>
+&nbsp;        
+&nbsp;        //Read in amt water
+<b class="nc">&nbsp;        String waterString = inputOutput(&quot;\nPlease enter the units of water in the meal: &quot;);</b>
+&nbsp;        
+&nbsp;        //Read in amt wet food
+<b class="nc">&nbsp;        String wetFoodString = inputOutput(&quot;\nPlease enter the units of wet food in the meal: &quot;);</b>
+&nbsp;        
+&nbsp;        //Read in amt treats
+<b class="nc">&nbsp;        String treatsString = inputOutput(&quot;\nPlease enter the units of treats in the meal: &quot;);</b>
+&nbsp;        
+<b class="nc">&nbsp;        MealPlan newPlan = new MealPlan();</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            newPlan.setAmtKibble(kibbleString);</b>
+<b class="nc">&nbsp;            newPlan.setAmtWater(waterString);</b>
+<b class="nc">&nbsp;            newPlan.setAmtWetFood(wetFoodString);</b>
+<b class="nc">&nbsp;            newPlan.setAmtTreats(treatsString);</b>
+&nbsp;            
+<b class="nc">&nbsp;            String edited = petFeeder.editMealPlan(planToEdit, newPlan);</b>
+&nbsp;            
+<b class="nc">&nbsp;            if (edited != null) {</b>
+<b class="nc">&nbsp;                System.out.println(edited + &quot; successfully edited.\n&quot;);</b>
+&nbsp;            }
+&nbsp;            else {
+<b class="nc">&nbsp;                System.out.println(edited + &quot;could not be edited.\n&quot;);</b>
+&nbsp;            }
+<b class="nc">&nbsp;        } catch (MealPlanException e) {</b>
+<b class="nc">&nbsp;            System.out.println(e.getMessage());</b>
+&nbsp;        } finally {
+<b class="nc">&nbsp;            mainMenu();</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Replenish food user interface that processes input.
+&nbsp;     */
+&nbsp;    public static void replenishFood() {
+&nbsp;        //Read in amt kibble
+<b class="nc">&nbsp;        String kibbleString = inputOutput(&quot;\nPlease enter the units of kibble to add: &quot;);</b>
+&nbsp;        
+&nbsp;        //Read in amt water
+<b class="nc">&nbsp;        String waterString = inputOutput(&quot;\nPlease enter the units of water to add: &quot;);</b>
+&nbsp;        
+&nbsp;        //Read in amt wet food
+<b class="nc">&nbsp;        String wetFoodString = inputOutput(&quot;\nPlease enter the units of wet food to add: &quot;);</b>
+&nbsp;        
+&nbsp;        //Read in amt treats
+<b class="nc">&nbsp;        String treatsString = inputOutput(&quot;\nPlease enter the units of treats to add: &quot;);</b>
+&nbsp;                
+&nbsp;        try {
+<b class="nc">&nbsp;            petFeeder.replenishFood(kibbleString, waterString, wetFoodString, treatsString);</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Food stock successfully replenished&quot;);</b>
+<b class="nc">&nbsp;        } catch (FoodStockException e) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Food stock was not replenished&quot;);</b>
+&nbsp;        } finally {
+<b class="nc">&nbsp;            mainMenu();</b>
+<b class="nc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Check food stock user interface that processes input.
+&nbsp;     */
+&nbsp;    public static void checkFoodStock() {
+<b class="nc">&nbsp;        System.out.println(petFeeder.checkFoodStock());</b>
+<b class="nc">&nbsp;        mainMenu();</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Dispense meal user interface that processes input.
+&nbsp;     */
+&nbsp;    public static void dispenseMeal() {
+<b class="nc">&nbsp;        MealPlan [] plans = petFeeder.getMealPlans();</b>
+<b class="nc">&nbsp;        for(int i = 0; i &lt; plans.length; i++) {</b>
+<b class="nc">&nbsp;            if (plans[i] != null) {</b>
+<b class="nc">&nbsp;                System.out.println((i+1) + &quot;. &quot; + plans[i].getName()</b>
+<b class="nc">&nbsp;                        + &quot; (energy cost: &quot; + plans[i].getEnergyCost() + &quot;)&quot;);</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;        
+<b class="nc">&nbsp;        int planToPurchase = planListSelection(&quot;Please select the number of the meal to dispense.&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        boolean dispensed = petFeeder.dispenseMeal(planToPurchase);</b>
+&nbsp;
+<b class="nc">&nbsp;        if (dispensed) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Dispensing &quot; + petFeeder.getMealPlans()[planToPurchase].getName());</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Remaining total energy budget: &quot; + petFeeder.getRemainingEnergyBudget() + &quot; energy points.\n&quot;);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            System.out.println(&quot;Insufficient ingredients or energy budget to dispense.\n&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        mainMenu();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Configure a recurring scheduled feeding.
+&nbsp;     */
+&nbsp;    public static void configureScheduledFeeding() {
+<b class="nc">&nbsp;        MealPlan [] plans = petFeeder.getMealPlans();</b>
+<b class="nc">&nbsp;        for(int i = 0; i &lt; plans.length; i++) {</b>
+<b class="nc">&nbsp;            if (plans[i] != null) {</b>
+<b class="nc">&nbsp;                System.out.println((i+1) + &quot;. &quot; + plans[i].getName());</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        int planToSchedule = planListSelection(&quot;Please select the number of the meal to schedule for automatic feeding.&quot;);</b>
+&nbsp;
+<b class="nc">&nbsp;        if(planToSchedule &lt; 0) {</b>
+<b class="nc">&nbsp;            mainMenu();</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        String periodString = inputOutput(&quot;Please enter the interval in seconds between feedings&quot;);</b>
+<b class="nc">&nbsp;        long periodSeconds = 0;</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            periodSeconds = Long.parseLong(periodString);</b>
+<b class="nc">&nbsp;            if (periodSeconds &lt;= 0) {</b>
+<b class="nc">&nbsp;                System.out.println(&quot;Please enter a positive integer for the interval&quot;);</b>
+<b class="nc">&nbsp;                mainMenu();</b>
+&nbsp;            }
+<b class="nc">&nbsp;        } catch (NumberFormatException e) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Please enter a positive integer for the interval&quot;);</b>
+<b class="nc">&nbsp;            mainMenu();</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        if (feedingScheduler == null) {</b>
+<b class="nc">&nbsp;            feedingScheduler = new FeedingScheduler(petFeeder);</b>
+&nbsp;        }
+&nbsp;
+<b class="nc">&nbsp;        feedingScheduler.scheduleRecurringFeeding(planToSchedule, periodSeconds);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;Scheduled recurring feeding for &quot; + plans[planToSchedule].getName() +</b>
+&nbsp;                           &quot; every &quot; + periodSeconds + &quot; seconds.\n&quot;);
+<b class="nc">&nbsp;        mainMenu();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Stops the current scheduled feeding, if any.
+&nbsp;     */
+&nbsp;    public static void stopScheduledFeeding() {
+<b class="nc">&nbsp;        if (feedingScheduler != null &amp;&amp; feedingScheduler.hasActiveSchedule()) {</b>
+<b class="nc">&nbsp;            feedingScheduler.stop();</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Scheduled feeding stopped.\n&quot;);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            System.out.println(&quot;No active scheduled feeding.\n&quot;);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        mainMenu();</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Passes a prompt to the user and returns the user specified 
+&nbsp;     * string.
+&nbsp;     * @param message The message prompt to display.
+&nbsp;     * @return String The user input.
+&nbsp;     */
+&nbsp;    private static String inputOutput(String message) {
+<b class="nc">&nbsp;        System.out.println(message);</b>
+<b class="nc">&nbsp;        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));</b>
+<b class="nc">&nbsp;        String returnString = &quot;&quot;;</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            returnString = br.readLine();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        catch (IOException e){</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Error reading in value&quot;);</b>
+<b class="nc">&nbsp;            mainMenu();</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return returnString;</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Passes a prompt to the user that deals with the meal plan list
+&nbsp;     * and returns the user selected number.
+&nbsp;     * @param message The message prompt to display.
+&nbsp;     * @return int The selected meal plan index.
+&nbsp;     */
+&nbsp;    private static int planListSelection(String message) {
+<b class="nc">&nbsp;        String userSelection = inputOutput(message);</b>
+<b class="nc">&nbsp;        int plan = 0;</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            plan = Integer.parseInt(userSelection) - 1;</b>
+<b class="nc">&nbsp;            if (plan &gt;= 0 &amp;&amp; plan &lt;=2) {</b>
+&nbsp;                //do nothing here.
+&nbsp;            } else {
+<b class="nc">&nbsp;                plan = -1;</b>
+&nbsp;            }
+<b class="nc">&nbsp;        } catch (NumberFormatException e) {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Please select a number from 1-3.&quot;);</b>
+<b class="nc">&nbsp;            plan = -1;</b>
+&nbsp;        }
+<b class="nc">&nbsp;        return plan;</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Starts the pet feeder program.
+&nbsp;     * @param args Command line arguments.
+&nbsp;     */
+&nbsp;    public static void main(String[] args) {
+<b class="nc">&nbsp;        petFeeder = new PetFeeder();</b>
+<b class="nc">&nbsp;        feedingScheduler = new FeedingScheduler(petFeeder);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;Welcome to the PetFeeder!\n&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;Maximum total energy budget for this run: &quot; + petFeeder.getEnergyLimit() + &quot; energy points.\n&quot;);</b>
+<b class="nc">&nbsp;        mainMenu();</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-03-01 15:31</div>
+</div>
+</body>
+</html>

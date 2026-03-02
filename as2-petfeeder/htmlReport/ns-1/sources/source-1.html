@@ -1,0 +1,255 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > FeedingScheduler</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">petfeeder</a>
+</div>
+
+<h1>Coverage Summary for Class: FeedingScheduler (petfeeder)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">FeedingScheduler</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87,5%
+  </span>
+  <span class="absValue">
+    (7/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (12/12)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">FeedingScheduler$FeedingJob</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (3/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    80%
+  </span>
+  <span class="absValue">
+    (8/10)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    83,3%
+  </span>
+  <span class="absValue">
+    (10/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90,9%
+  </span>
+  <span class="absValue">
+    (20/22)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package petfeeder;
+&nbsp;
+&nbsp;import java.util.concurrent.Executors;
+&nbsp;import java.util.concurrent.ScheduledExecutorService;
+&nbsp;import java.util.concurrent.ScheduledFuture;
+&nbsp;import java.util.concurrent.TimeUnit;
+&nbsp;
+&nbsp;import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+&nbsp;
+&nbsp;/**
+&nbsp; * Schedules recurring automatic feedings while the program is running.
+&nbsp; */
+&nbsp;public class FeedingScheduler {
+&nbsp;
+&nbsp;    private final PetFeeder petFeeder;
+&nbsp;    private final ScheduledExecutorService executor;
+&nbsp;    private ScheduledFuture&lt;?&gt; currentTask;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Creates a feeding scheduler bound to a specific PetFeeder.
+&nbsp;     * @param petFeeder The PetFeeder instance to use for dispensing meals.
+&nbsp;     */
+<b class="fc">&nbsp;    public FeedingScheduler(PetFeeder petFeeder) {</b>
+<b class="fc">&nbsp;        this.petFeeder = petFeeder;</b>
+<b class="fc">&nbsp;        this.executor = Executors.newSingleThreadScheduledExecutor();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Starts a recurring feeding schedule. If a schedule is already active,
+&nbsp;     * it will be replaced by the new one.
+&nbsp;     * @param mealPlanIndex Index of the meal plan to dispense.
+&nbsp;     * @param periodSeconds Interval in seconds between feedings.
+&nbsp;     */
+&nbsp;    public synchronized void scheduleRecurringFeeding(final int mealPlanIndex,
+&nbsp;                                                      long periodSeconds) {
+<b class="pc">&nbsp;        if (currentTask != null &amp;&amp; !currentTask.isCancelled()) {</b>
+<b class="fc">&nbsp;            currentTask.cancel(false);</b>
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        currentTask = executor.scheduleAtFixedRate(new FeedingJob((mealPlanIndex)),</b>
+&nbsp;                periodSeconds, periodSeconds, TimeUnit.SECONDS);
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Stops the current feeding schedule, if any.
+&nbsp;     */
+&nbsp;    public synchronized void stop() {
+<b class="fc">&nbsp;        if (currentTask != null) {</b>
+<b class="fc">&nbsp;            currentTask.cancel(false);</b>
+<b class="fc">&nbsp;            currentTask = null;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns true if there is an active schedule.
+&nbsp;     * @return boolean
+&nbsp;     */
+&nbsp;    public synchronized boolean hasActiveSchedule() {
+<b class="fc">&nbsp;        return currentTask != null &amp;&amp; !currentTask.isCancelled();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Shuts down the underlying executor service.
+&nbsp;     * Should be called before the program exits if possible.
+&nbsp;     */
+&nbsp;    public void shutdown() {
+<b class="fc">&nbsp;        executor.shutdownNow();</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    public ScheduledFuture&lt;?&gt; getCurrentTask() { return currentTask; }</b>
+&nbsp;
+&nbsp;    public class FeedingJob implements Runnable {
+&nbsp;        private final int mealIndex;
+&nbsp;
+<b class="fc">&nbsp;        public FeedingJob(int mealIndex) {</b>
+<b class="fc">&nbsp;            this.mealIndex = mealIndex;</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        @Override
+&nbsp;        public void run() {
+&nbsp;            try {
+<b class="fc">&nbsp;                boolean dispensed = petFeeder.dispenseMeal(mealIndex);</b>
+<b class="fc">&nbsp;                if (!dispensed) {</b>
+<b class="fc">&nbsp;                    System.out.println(&quot;[Scheduler] Scheduled meal could not be dispensed...&quot;);</b>
+&nbsp;                } else {
+<b class="fc">&nbsp;                    MealPlan[] plans = petFeeder.getMealPlans();</b>
+<b class="pc">&nbsp;                    String name = (plans[mealIndex] != null) ? plans[mealIndex].getName() : &quot;(unknown meal)&quot;;</b>
+<b class="fc">&nbsp;                    System.out.println(&quot;[Scheduler] Dispensed scheduled meal: &quot; + name);</b>
+&nbsp;                }
+<b class="nc">&nbsp;            } catch (Exception e) {</b>
+<b class="nc">&nbsp;                System.out.println(&quot;[Scheduler] Error during scheduled feeding: &quot; + e.getMessage());</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-03-01 15:31</div>
+</div>
+</body>
+</html>

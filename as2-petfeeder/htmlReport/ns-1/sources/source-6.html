@@ -1,0 +1,256 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > PetFeeder</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">petfeeder</a>
+</div>
+
+<h1>Coverage Summary for Class: PetFeeder (petfeeder)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">PetFeeder</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (31/31)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package petfeeder;
+&nbsp;
+&nbsp;import petfeeder.exceptions.FoodStockException;
+&nbsp;
+&nbsp;public class PetFeeder {
+&nbsp;    
+&nbsp;    /** Array of meal plans in pet feeder */
+&nbsp;    private static MealPlanBook mealPlanBook;
+&nbsp;    /** Food container (inventory) of the pet feeder */
+&nbsp;    private static FoodContainer foodContainer;
+&nbsp;    /** Simple total energy limit (in the same abstract energy points as meal energyCost). */
+&nbsp;    private static final int ENERGY_LIMIT = 500;
+&nbsp;    /** Energy consumed so far since the feeder was started. */
+&nbsp;    private int energyConsumedSoFar;
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Constructor for the pet feeder.
+&nbsp;     */
+<b class="fc">&nbsp;    public PetFeeder() {</b>
+<b class="fc">&nbsp;        mealPlanBook = new MealPlanBook();</b>
+<b class="fc">&nbsp;        foodContainer = new FoodContainer();</b>
+<b class="fc">&nbsp;        this.energyConsumedSoFar = 0;</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Returns true if the meal plan is added to the
+&nbsp;     * list of meal plans in the PetFeeder and false
+&nbsp;     * otherwise.
+&nbsp;     * @param m The meal plan to add.
+&nbsp;     * @return boolean
+&nbsp;     */
+&nbsp;    public boolean addMealPlan(MealPlan m) {
+<b class="fc">&nbsp;        return mealPlanBook.addMealPlan(m);</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Returns the name of the successfully deleted meal plan
+&nbsp;     * or null if the meal plan cannot be deleted.
+&nbsp;     * @param mealPlanToDelete The index of the meal plan to delete.
+&nbsp;     * @return String
+&nbsp;     */
+&nbsp;    public String deleteMealPlan(int mealPlanToDelete) {
+<b class="fc">&nbsp;        return mealPlanBook.deleteMealPlan(mealPlanToDelete);</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Returns the name of the successfully edited meal plan
+&nbsp;     * or null if the meal plan cannot be edited.
+&nbsp;     * @param mealPlanToEdit The index of the meal plan to edit.
+&nbsp;     * @param m The new meal plan object.
+&nbsp;     * @return String
+&nbsp;     */
+&nbsp;    public String editMealPlan(int mealPlanToEdit, MealPlan m) {
+<b class="fc">&nbsp;        return mealPlanBook.editMealPlan(mealPlanToEdit, m);</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Returns true if food stock was successfully replenished.
+&nbsp;     * @param amtKibble The amount of kibble to add.
+&nbsp;     * @param amtWater The amount of water to add.
+&nbsp;     * @param amtWetFood The amount of wet food to add.
+&nbsp;     * @param amtTreats The amount of treats to add.
+&nbsp;     * @throws FoodStockException if inputs are invalid.
+&nbsp;     */
+&nbsp;    public synchronized void replenishFood(String amtKibble, String amtWater, String amtWetFood, String amtTreats) throws FoodStockException {
+<b class="fc">&nbsp;        foodContainer.addKibble(amtKibble);</b>
+<b class="fc">&nbsp;        foodContainer.addWater(amtWater);</b>
+&nbsp;        // This will call the method with the seeded bug
+<b class="fc">&nbsp;        foodContainer.addWetFood(amtWetFood);</b>
+<b class="fc">&nbsp;        foodContainer.addTreats(amtTreats);</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Returns the food stock status of the pet feeder.
+&nbsp;     * @return String
+&nbsp;     */
+&nbsp;    public synchronized String checkFoodStock() {
+<b class="fc">&nbsp;        return foodContainer.toString();</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Attempts to dispense the selected meal plan.
+&nbsp;     * Returns true if the meal was successfully dispensed and false otherwise.
+&nbsp;     * @param mealPlanToPurchase The index of the meal plan selected by the user.
+&nbsp;     * @return boolean True if dispensing succeeded.
+&nbsp;     */
+&nbsp;    public synchronized boolean dispenseMeal(int mealPlanToPurchase) {
+<b class="fc">&nbsp;        boolean dispensed = false;</b>
+<b class="fc">&nbsp;        MealPlan[] plans = getMealPlans();</b>
+&nbsp;
+<b class="fc">&nbsp;        if(mealPlanToPurchase &gt;= plans.length || mealPlanToPurchase &lt; 0 ){</b>
+<b class="fc">&nbsp;            dispensed = false;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        else if (plans[mealPlanToPurchase] == null) {</b>
+<b class="fc">&nbsp;            dispensed = false;</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            MealPlan selected = plans[mealPlanToPurchase];</b>
+<b class="fc">&nbsp;            int mealEnergy = selected.getEnergyCost();</b>
+<b class="fc">&nbsp;            int remainingEnergyBudget = ENERGY_LIMIT - energyConsumedSoFar;</b>
+&nbsp;
+&nbsp;            // Require enough remaining total energy budget.
+<b class="fc">&nbsp;            if (mealEnergy &lt;= remainingEnergyBudget) {</b>
+<b class="fc">&nbsp;                if (foodContainer.useIngredients(selected)) {</b>
+<b class="fc">&nbsp;                    energyConsumedSoFar += mealEnergy;</b>
+<b class="fc">&nbsp;                    dispensed = true;</b>
+&nbsp;                } else {
+<b class="fc">&nbsp;                    dispensed = false;</b>
+&nbsp;                }
+&nbsp;            } else {
+<b class="fc">&nbsp;                dispensed = false;</b>
+&nbsp;            }
+&nbsp;        }
+&nbsp;
+<b class="fc">&nbsp;        return dispensed;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the list of MealPlans in the MealPlanBook.
+&nbsp;     * @return MealPlan[]
+&nbsp;     */
+&nbsp;    public synchronized MealPlan[] getMealPlans() {
+<b class="fc">&nbsp;        return mealPlanBook.getMealPlans();</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the configured total energy limit for this feeder.
+&nbsp;     * @return int
+&nbsp;     */
+&nbsp;    public int getEnergyLimit() {
+<b class="fc">&nbsp;        return ENERGY_LIMIT;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the remaining energy budget (limit minus energy consumed so far).
+&nbsp;     * @return int
+&nbsp;     */
+&nbsp;    public int getRemainingEnergyBudget() {
+<b class="fc">&nbsp;        return ENERGY_LIMIT - energyConsumedSoFar;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-03-01 15:31</div>
+</div>
+</body>
+</html>

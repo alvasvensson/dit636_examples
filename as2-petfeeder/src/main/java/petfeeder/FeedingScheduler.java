@@ -5,6 +5,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 /**
  * Schedules recurring automatic feedings while the program is running.
  */
@@ -35,23 +37,8 @@ public class FeedingScheduler {
             currentTask.cancel(false);
         }
 
-        currentTask = executor.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    boolean dispensed = petFeeder.dispenseMeal(mealPlanIndex);
-                    if (!dispensed) {
-                        System.out.println("[Scheduler] Scheduled meal could not be dispensed (insufficient ingredients or energy budget).");
-                    } else {
-                        MealPlan[] plans = petFeeder.getMealPlans();
-                        String name = (plans[mealPlanIndex] != null) ? plans[mealPlanIndex].getName() : "(unknown meal)";
-                        System.out.println("[Scheduler] Dispensed scheduled meal: " + name);
-                    }
-                } catch (Exception e) {
-                    System.out.println("[Scheduler] Error during scheduled feeding: " + e.getMessage());
-                }
-            }
-        }, periodSeconds, periodSeconds, TimeUnit.SECONDS);
+        currentTask = executor.scheduleAtFixedRate(new FeedingJob((mealPlanIndex)),
+                periodSeconds, periodSeconds, TimeUnit.SECONDS);
     }
 
     /**
@@ -79,5 +66,33 @@ public class FeedingScheduler {
     public void shutdown() {
         executor.shutdownNow();
     }
-}
 
+    public ScheduledFuture<?> getCurrentTask() { return currentTask; }
+
+    public class FeedingJob implements Runnable {
+        private final int mealIndex;
+
+        public FeedingJob(int mealIndex) {
+            this.mealIndex = mealIndex;
+        }
+
+        @Override
+        public void run() {
+            currentTask = null;
+            try {
+                boolean dispensed = petFeeder.dispenseMeal(mealIndex);
+                if (!dispensed) {
+                    System.out.println("[Scheduler] Scheduled meal could not be dispensed...");
+                } else {
+                    MealPlan[] plans = petFeeder.getMealPlans();
+                    String name = (plans[mealIndex] != null) ? plans[mealIndex].getName() : "(unknown meal)";
+                    System.out.println("[Scheduler] Dispensed scheduled meal: " + name);
+                }
+            } catch (Exception e) {
+                System.out.println("[Scheduler] Error during scheduled feeding: " + e.getMessage());
+            }
+        }
+    }
+
+
+}

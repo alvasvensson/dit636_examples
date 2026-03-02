@@ -1,0 +1,329 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > MealPlan</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">petfeeder</a>
+</div>
+
+<h1>Coverage Summary for Class: MealPlan (petfeeder)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MealPlan</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87,5%
+  </span>
+  <span class="absValue">
+    (14/16)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66,7%
+  </span>
+  <span class="absValue">
+    (16/24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    86,4%
+  </span>
+  <span class="absValue">
+    (57/66)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package petfeeder;
+&nbsp;
+&nbsp;import petfeeder.exceptions.MealPlanException;
+&nbsp;
+&nbsp;public class MealPlan {
+&nbsp;    private String name;
+&nbsp;    private int energyCost;
+&nbsp;    private int amtKibble;
+&nbsp;    private int amtWater;
+&nbsp;    private int amtWetFood;
+&nbsp;    private int amtTreats;
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Creates a default meal plan for the pet feeder.
+&nbsp;     */
+<b class="fc">&nbsp;    public MealPlan() {</b>
+<b class="fc">&nbsp;        this.name = &quot;&quot;;</b>
+<b class="fc">&nbsp;        this.amtKibble = 0;</b>
+<b class="fc">&nbsp;        this.amtWater = 0;</b>
+<b class="fc">&nbsp;        this.amtWetFood = 0;</b>
+<b class="fc">&nbsp;        this.amtTreats = 0;</b>
+<b class="fc">&nbsp;        this.energyCost = 0;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /** Per-unit energy values (abstract &quot;energy points&quot;, can be read as kcal). */
+&nbsp;    private static final int KIBBLE_ENERGY = 10;
+&nbsp;    private static final int WATER_ENERGY = 5;
+&nbsp;    private static final int WETFOOD_ENERGY = 15;
+&nbsp;    private static final int TREATS_ENERGY = 20;
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Recalculates the total energy cost based on ingredient amounts and
+&nbsp;     * fixed per-unit energy values.
+&nbsp;     */
+&nbsp;    private void updateEnergyCost() {
+<b class="fc">&nbsp;        this.energyCost =</b>
+&nbsp;                (amtKibble * KIBBLE_ENERGY) +
+&nbsp;                (amtWater * WATER_ENERGY) +
+&nbsp;                (amtWetFood * WETFOOD_ENERGY) +
+&nbsp;                (amtTreats * TREATS_ENERGY);
+&nbsp;    }
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Returns the amount of treats in the meal plan.
+&nbsp;     * @return int
+&nbsp;     */
+&nbsp;    public int getAmtTreats() {
+<b class="fc">&nbsp;        return amtTreats;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the amount of treats required for the meal.
+&nbsp;     * @param treats The amount of treats to set (as a string).
+&nbsp;     * @throws MealPlanException if the input is not a positive integer.
+&nbsp;     */
+&nbsp;    public void setAmtTreats(String treats) throws MealPlanException {
+<b class="fc">&nbsp;        int amtTreats = 0;</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            amtTreats = Integer.parseInt(treats);</b>
+<b class="fc">&nbsp;        } catch (NumberFormatException e) {</b>
+<b class="fc">&nbsp;            throw new MealPlanException(&quot;Units of treats must be a positive integer&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if (amtTreats &gt;= 0) {</b>
+<b class="fc">&nbsp;            this.amtTreats = amtTreats;</b>
+<b class="fc">&nbsp;            updateEnergyCost();</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            throw new MealPlanException(&quot;Units of treats must be a positive integer&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the amount of kibble in the meal plan.
+&nbsp;     * @return int
+&nbsp;     */
+&nbsp;    public int getAmtKibble() {
+<b class="fc">&nbsp;        return amtKibble;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the amount of kibble required for the meal.
+&nbsp;     * @param kibble The amount of kibble to set (as a string).
+&nbsp;     * @throws MealPlanException if the input is not a positive integer.
+&nbsp;     */
+&nbsp;    public void setAmtKibble(String kibble) throws MealPlanException {
+<b class="fc">&nbsp;        int amtKibble = 0;</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            amtKibble = Integer.parseInt(kibble);</b>
+<b class="fc">&nbsp;        } catch (NumberFormatException e) {</b>
+<b class="fc">&nbsp;            throw new MealPlanException(&quot;Units of kibble must be a positive integer&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if (amtKibble &gt;= 0) {</b>
+<b class="fc">&nbsp;            this.amtKibble = amtKibble;</b>
+<b class="fc">&nbsp;            updateEnergyCost();</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            throw new MealPlanException(&quot;Units of kibble must be a positive integer&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the amount of water in the meal plan.
+&nbsp;     * @return int
+&nbsp;     */
+&nbsp;    public int getAmtWater() {
+<b class="fc">&nbsp;        return amtWater;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the amount of water required for the meal.
+&nbsp;     * @param water The amount of water to set (as a string).
+&nbsp;     * @throws MealPlanException if the input is not a positive integer.
+&nbsp;     */
+&nbsp;    public void setAmtWater(String water) throws MealPlanException{
+<b class="fc">&nbsp;        int amtWater = 0;</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            amtWater = Integer.parseInt(water);</b>
+<b class="fc">&nbsp;        } catch (NumberFormatException e) {</b>
+<b class="fc">&nbsp;            throw new MealPlanException(&quot;Units of water must be a positive integer&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if (amtWater &gt;= 0) {</b>
+<b class="fc">&nbsp;            this.amtWater = amtWater;</b>
+<b class="fc">&nbsp;            updateEnergyCost();</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            throw new MealPlanException(&quot;Units of water must be a positive integer&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the amount of wet food in the meal plan.
+&nbsp;     * @return int
+&nbsp;     */
+&nbsp;    public int getAmtWetFood() {
+<b class="fc">&nbsp;        return amtWetFood;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the amount of wet food required for the meal.
+&nbsp;     * @param wetFood The amount of wet food to set (as a string).
+&nbsp;     * @throws MealPlanException if the input is not a positive integer.
+&nbsp;     */
+&nbsp;    public void setAmtWetFood(String wetFood) throws MealPlanException {
+<b class="fc">&nbsp;        int amtWetFood = 0;</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            amtWetFood = Integer.parseInt(wetFood);</b>
+<b class="fc">&nbsp;        } catch (NumberFormatException e) {</b>
+<b class="fc">&nbsp;            throw new MealPlanException(&quot;Units of wet food must be a positive integer&quot;);</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if (amtWetFood &gt;= 0) {</b>
+<b class="fc">&nbsp;            this.amtWetFood = amtWetFood;</b>
+<b class="fc">&nbsp;            updateEnergyCost();</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            throw new MealPlanException(&quot;Units of wet food must be a positive integer&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the name of the meal plan.
+&nbsp;     * @return String
+&nbsp;     */
+&nbsp;    public String getName() {
+<b class="fc">&nbsp;        return name;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Sets the name of the meal plan.
+&nbsp;     * @param name The name to set.
+&nbsp;     */
+&nbsp;    public void setName(String name) {
+<b class="pc">&nbsp;        if(name != null) {</b>
+<b class="fc">&nbsp;            this.name = name;</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Returns the energy cost of the meal plan.
+&nbsp;     * @return int
+&nbsp;     */
+&nbsp;    public int getEnergyCost() {
+<b class="fc">&nbsp;        return energyCost;</b>
+&nbsp;    }
+&nbsp;    
+&nbsp;    /**
+&nbsp;     * Returns the name of the meal plan.
+&nbsp;     * @return String
+&nbsp;     */
+&nbsp;    public String toString() {
+<b class="nc">&nbsp;        return name;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public int hashCode() {
+<b class="nc">&nbsp;        final int prime = 31;</b>
+<b class="nc">&nbsp;        int result = 1;</b>
+<b class="nc">&nbsp;        result = prime * result + ((name == null) ? 0 : name.hashCode());</b>
+<b class="nc">&nbsp;        return result;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    @Override
+&nbsp;    public boolean equals(Object obj) {
+<b class="fc">&nbsp;        if (this == obj)</b>
+<b class="fc">&nbsp;            return true;</b>
+<b class="fc">&nbsp;        if (obj == null)</b>
+<b class="fc">&nbsp;            return false;</b>
+<b class="pc">&nbsp;        if (getClass() != obj.getClass())</b>
+<b class="nc">&nbsp;            return false;</b>
+<b class="fc">&nbsp;        final MealPlan other = (MealPlan) obj;</b>
+<b class="pc">&nbsp;        if (name == null) {</b>
+<b class="nc">&nbsp;            if (other.name != null)</b>
+<b class="nc">&nbsp;                return false;</b>
+<b class="pc">&nbsp;        } else if (!name.equals(other.name))</b>
+<b class="fc">&nbsp;            return false;</b>
+<b class="nc">&nbsp;        return true;</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-03-01 15:31</div>
+</div>
+</body>
+</html>

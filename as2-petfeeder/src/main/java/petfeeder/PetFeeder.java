@@ -88,7 +88,10 @@ public class PetFeeder {
         boolean dispensed = false;
         MealPlan[] plans = getMealPlans();
 
-        if (plans[mealPlanToPurchase] == null) {
+        if(mealPlanToPurchase >= plans.length || mealPlanToPurchase < 0 ){
+            dispensed = false;
+        }
+        else if (plans[mealPlanToPurchase] == null) {
             dispensed = false;
         } else {
             MealPlan selected = plans[mealPlanToPurchase];
