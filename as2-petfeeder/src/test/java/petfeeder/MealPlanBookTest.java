@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class MealPlanBookTest {
 
     private MealPlanBook mealPlanBook;
-    private MealPlan [] mealPlans;
     private MealPlan meal;
     private MealPlan breakfast;
     private MealPlan mp3;
@@ -17,7 +16,7 @@ class MealPlanBookTest {
 
 
     @BeforeEach
-    void setUp() throws Exception {
+    void setUp() {
         mealPlanBook = new MealPlanBook();
         breakfast = new MealPlan();
         breakfast.setName("Breakfast");
@@ -102,5 +101,20 @@ class MealPlanBookTest {
         String expected = null;
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void testMealPlanShouldBeDeleted() {
+        boolean exists = mealPlanBook.addMealPlan(meal);
+        assertTrue(exists);
+
+        MealPlan[] plan = mealPlanBook.getMealPlans();
+        assertSame(plan[0].getName(), meal.getName(), "Name of meal at the 0-th Mealplan index and the created" +
+                "mealplan should be the same.");
+
+        mealPlanBook.deleteMealPlan(0);
+
+        assertNull(plan[0], "Mealplan that was created should be null as a result of the deletion.");
+
     }
 }

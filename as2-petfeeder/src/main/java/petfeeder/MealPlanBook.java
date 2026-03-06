@@ -63,7 +63,7 @@ public class MealPlanBook {
     public synchronized String deleteMealPlan(int mealPlanToDelete) {
         if (mealPlanArray[mealPlanToDelete] != null) {
             String name = mealPlanArray[mealPlanToDelete].getName();
-            mealPlanArray[mealPlanToDelete] = new MealPlan();
+            mealPlanArray[mealPlanToDelete] = null;
             return name;
         } else {
             return null;

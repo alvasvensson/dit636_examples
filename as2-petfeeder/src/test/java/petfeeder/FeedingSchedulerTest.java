@@ -21,7 +21,7 @@ public class FeedingSchedulerTest {
     private int mealIndex1;
     private int mealIndex2;
     private long periodicity;
-    private ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    private final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     PrintStream stdout = System.out;
 
     @BeforeEach
@@ -54,7 +54,7 @@ public class FeedingSchedulerTest {
     }
 
     @AfterEach
-    public void cleanUp() throws Exception {
+    public void cleanUp() {
         System.setOut(stdout);
     }
 
@@ -202,20 +202,6 @@ public class FeedingSchedulerTest {
         assertTrue(capturedOutput.contains(expectedMessage), "Console output should" +
                 "contain expectedMessage when the mealplan does not exist");
     }
-
-    /*
-    @Test
-    public void NegativeIndexShouldProduceArrayIndexOutOfBoundsError() {
-        FeedingScheduler.FeedingJob job = feedingScheduler.new FeedingJob(-1);
-        System.setOut(new PrintStream(outputStream));
-
-        job.run();
-
-        String capturedOutput = outputStream.toString();
-        String expectedMessage = "[Scheduler] Error during scheduled feeding: Index -1 out of bounds for length 4";
-        assertTrue(capturedOutput.contains(expectedMessage), "Console output should contain " +
-                "expectedMessage when index of mealplan is out of bounds");
-    } */
 
     @Test
     public void UnnamedExistingMealShouldBeDispensed() {
